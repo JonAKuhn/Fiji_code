@@ -20,6 +20,7 @@ t_0 = Dialog.getNumber();
 
 id = getInfo("image.directory") + getInfo("image.filename");
 Ext.setId(id);
+Ext.getImageCount(imageCount);
 deltaT = newArray(imageCount);
 for (no = 0; no < imageCount; no++) {
   Ext.getPlaneTimingDeltaT(deltaT[no], no);
