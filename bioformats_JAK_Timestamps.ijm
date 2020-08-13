@@ -20,7 +20,6 @@ t_0 = Dialog.getNumber();
 
 id = getInfo("image.directory") + getInfo("image.filename");
 Ext.setId(id);
-Ext.getImageCount(imageCount);
 deltaT = newArray(imageCount);
 for (no = 0; no < imageCount; no++) {
   Ext.getPlaneTimingDeltaT(deltaT[no], no);
@@ -80,15 +79,38 @@ abstime = abs(time);
 
 hrs_num = floor(abstime/3600);
 
+rem_min = abstime%3600;
+
+min_num = floor(rem_min/60);
+
+if (min_num == 60) {
+	min_num = 0;
+	hrs_num = hrs_num + 1;
+}
+
+
+
+rem_sec = rem_min%60;
+
+sec_num = round(rem_sec);
+
+if (sec_num == 60) {
+	sec_num = 0;
+	min_num = min_num + 1;
+}
+
+if (min_num == 60) {
+	min_num = 0;
+	hrs_num = hrs_num + 1;
+}
+
 hrs = toString(hrs_num);
 
 if (hrs_num < 10) {
 	hrs = "0"+hrs;
 }
 
-rem_min = abstime%3600;
 
-min_num = floor(rem_min/60);
 
 min = toString(min_num);
 
@@ -96,9 +118,7 @@ if (min_num < 10) {
 	min = "0"+min;
 }
 
-rem_sec = rem_min%60;
 
-sec_num = round(rem_sec);
 
 sec = toString(sec_num);
 
@@ -130,13 +150,21 @@ min_num = floor(abstime/60);
 
 min = toString(min_num);
 
+rem_sec = abstime%60;
+
+sec_num = round(rem_sec);
+
+if (sec_num == 60) {
+	sec_num = 0;
+	min_num = min_num + 1;
+}
+
+
 if (min_num < 10) {
 	min = "0"+min;
 }
 
-rem_sec = abstime%60;
 
-sec_num = round(rem_sec);
 
 sec = toString(sec_num);
 
