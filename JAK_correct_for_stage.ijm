@@ -3,6 +3,22 @@
 setBatchMode(true);
 run("Bio-Formats Macro Extensions");
 
+
+//////// Dialog box
+
+
+Dialog.create("Shifting properties");
+Dialog.addChoice("Positive X direction (image shift):", newArray("Left", "Right"));
+Dialog.addChoice("Positive Y direction (image shift):", newArray("Up", "Down"));
+
+
+
+Dialog.show();
+xorient = Dialog.getChoice;
+yorient = Dialog.getChoice;;
+
+////
+
 id = getInfo("image.directory") + getInfo("image.filename");
 Ext.setId(id);
 
@@ -16,14 +32,36 @@ for (no = 0; no < imageCount; no++) {
   Ext.getPlanePositionY(yPos[no], no);
   }
 
-//normalize to first frame
+//Adjust array to each timepoint
+Ext.getSizeZ(z);
+Ext.getSizeC(c);
+Ext.getSizeT(t);
 
+planes_per_time = z * c;
+
+first_planes = newArray(t);
+first_x = newArray(t);
+first_y = newArray(t);
+
+temp = 0
+
+for (i = 0; i < t; i++)
+{
+	first_planes[i] = temp;
+	first_x[i] = xPos[temp];
+	first_y[i] = yPos[temp];
+	temp = temp + planes_per_time; 
+	
+}
+
+//normalize to first frame
+imageCount = t;
 xPosDelta = newArray(imageCount);
 yPosDelta = newArray(imageCount);
 
 for (no = 0; no < imageCount; no++) {
-  xPosDelta[no] = xPos[no] - xPos[0] ;
-  yPosDelta[no] = yPos[no] - yPos[0] ;
+  xPosDelta[no] = first_x[no] - first_x[0] ;
+  yPosDelta[no] = first_y[no] - first_y[0] ;
   }
 
 //Convert movement to pixels and round to nearest pixel
@@ -35,7 +73,14 @@ yDeltaPixels = newArray(imageCount);
 
 for (no = 0; no < imageCount; no++) {
   xDeltaPixels[no] = round(xPosDelta[no]/pix_size) ;
+  if (xorient == 'Right'){
+  	xDeltaPixels[no] = -xDeltaPixels[no];
+  }
+
   yDeltaPixels[no] = round(yPosDelta[no]/pix_size) ;
+  if (yorient == 'Down'){
+  	yDeltaPixels[no] = -yDeltaPixels[no];
+  }
   }
 
 
